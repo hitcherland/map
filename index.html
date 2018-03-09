@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+	<head>
+		<title>map</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.png">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+		<script src="he3/three.js/three.min.js"></script>
+		<script src="he3/colours.js"></script>
+		<script src="map.js"></script>
+	</head>
+	<body>
+		<script>
+			var camera, scene, renderer;
+			var bgPeriod = 15;
+            var grid;
+
+			init();
+			animate();
+
+			function init() {
+				var container = 
+				scene = new THREE.Scene();
+				camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 500 );
+				camera.position.set(100, 100, 100);
+                camera.lookAt(0, 0, 0);
+
+                renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+                renderer.setClearColor( 0x000000, 1 );
+				camera.updateProjectionMatrix();
+				document.body.appendChild( renderer.domElement );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+				directionalLight.position.set( 400, 400, 400 );
+				scene.add( directionalLight );
+
+                var lights = [];
+                lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+                lights[ 1 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+                lights[ 2 ] = new THREE.PointLight( 0xffffff, 1, 0 );
+
+                lights[ 0 ].position.set( 0, 200, 0 );
+                lights[ 1 ].position.set( 100, 200, 100 );
+                lights[ 2 ].position.set( - 100, - 200, - 100 );
+
+                scene.add( lights[ 0 ] );
+                scene.add( lights[ 1 ] );
+                scene.add( lights[ 2 ] );
+
+
+                grid = makeGrid(10,10,10);
+                scene.add( grid );
+
+				window.addEventListener( 'resize', onWindowResize, false );
+			}
+
+			function animate() {
+				requestAnimationFrame(animate);
+				render();
+			}
+
+			function render() {
+				var d = new Date();
+				var time = ( d.getTime() - d.getTimezoneOffset() )/1000;
+				var hue = ( time % bgPeriod ) / bgPeriod;
+				var bgColour = he3.colours.getSoft( hue );
+				scene.background = bgColour;
+				renderer.render( scene, camera );
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+		</script>
+	</body>
+</html>
