@@ -78,6 +78,9 @@ function makeGrid( xSegments, ySegments, blockSize ) {
     }
 
     function onMouseMove( event ) {
+        if(typeof event.touches !== "undefined" ) {
+            event = event.touches[0];
+        }
         for(var i=0; i<gridObject.children.length; i++) {
             gridObject.children[i].material.uniforms.mouseOver.value = 0.0;
         }
@@ -113,6 +116,7 @@ function makeGrid( xSegments, ySegments, blockSize ) {
     }
 
     window.addEventListener( 'mousemove', onMouseMove, false );
+    window.addEventListener( 'touchmove', onMouseMove, false );
     window.addEventListener( 'click', onMouseClick, false );
     return gridObject;
 }
